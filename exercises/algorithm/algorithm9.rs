@@ -1,12 +1,11 @@
 /*
-	heap
-	This question requires you to implement a binary heap function
+    heap
+    This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
 
 use std::cmp::Ord;
 use std::default::Default;
-
+#[derive(Debug)]
 pub struct Heap<T>
 where
     T: Default,
@@ -37,7 +36,9 @@ where
     }
 
     pub fn add(&mut self, value: T) {
-        //TODO
+        self.items.push(value);
+        self.count += 1;
+        self.adapt(self.count);
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -58,7 +59,15 @@ where
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
         //TODO
-		0
+        0
+    }
+
+    fn adapt(&mut self, index: usize) {
+        let parent = self.parent_idx(index);
+        if index > 0 && parent > 0 && (self.comparator)(&self.items[index], &self.items[parent]) {
+            self.items.swap(parent, index);
+            self.adapt(parent);
+        }
     }
 }
 
@@ -84,8 +93,12 @@ where
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
-        //TODO
-		None
+        if self.count < 1 {
+            return None;
+        }
+        let max = self.items.remove(1);
+        self.count -= 1;
+        Some(max)
     }
 }
 
@@ -129,8 +142,10 @@ mod tests {
         heap.add(2);
         heap.add(9);
         heap.add(11);
+
         assert_eq!(heap.len(), 4);
         assert_eq!(heap.next(), Some(2));
+        println!("{:?}", heap);
         assert_eq!(heap.next(), Some(4));
         assert_eq!(heap.next(), Some(9));
         heap.add(1);
@@ -144,6 +159,7 @@ mod tests {
         heap.add(2);
         heap.add(9);
         heap.add(11);
+        println!("{:?}", heap);
         assert_eq!(heap.len(), 4);
         assert_eq!(heap.next(), Some(11));
         assert_eq!(heap.next(), Some(9));
