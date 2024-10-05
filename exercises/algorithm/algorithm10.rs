@@ -2,7 +2,6 @@
     graph
     This problem requires you to implement a basic graph function
 */
-// I AM NOT DONE
 
 use std::collections::{HashMap, HashSet};
 use std::fmt;
@@ -13,6 +12,7 @@ impl fmt::Display for NodeNotInGraph {
         write!(f, "accessing a node that is not in the graph")
     }
 }
+#[derive(Debug)]
 pub struct UndirectedGraph {
     adjacency_table: HashMap<String, Vec<(String, i32)>>,
 }
@@ -29,7 +29,16 @@ impl Graph for UndirectedGraph {
         &self.adjacency_table
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
-        //TODO
+        self.adjacency_table
+            .entry(edge.0.to_string())
+            .or_insert(Vec::new());
+        self.adjacency_table
+            .entry(edge.1.to_string())
+            .or_insert(Vec::new());
+        let mut get_mut = self.adjacency_table.get_mut(edge.0).unwrap();
+        get_mut.push((edge.1.to_string(), edge.2));
+        let mut get_mut = self.adjacency_table.get_mut(edge.1).unwrap();
+        get_mut.push((edge.0.to_string(), edge.2));
     }
 }
 pub trait Graph {
